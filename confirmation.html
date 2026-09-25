@@ -1,0 +1,403 @@
+<!DOCTYPE html> <html lang="fr"> <head>
+    <meta charset="UTF-8">
+    
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    
+    <title>Commande confirmée - Parfums Store</title>
+    
+    <link
+        rel="stylesheet"
+        href="commande.css"
+    >
+    
+    </head> <body>
+    <!-- ==========================
+         HEADER
+    =========================== -->
+    
+    <header class="header">
+    
+        <div class="header-content">
+    
+            <a
+                href="index.html"
+                class="logo-link"
+            >
+    
+                <img
+                    src="logo.png"
+                    alt="Parfums Store"
+                    class="logo"
+                >
+    
+            </a>
+    
+        </div>
+    
+    </header>
+    
+    
+    <!-- ==========================
+         CONTENU
+    =========================== -->
+    
+    <main class="checkout-container">
+    
+    
+        <div class="checkout-title">
+    
+            <p class="subtitle">
+                Parfums Store
+            </p>
+    
+            <h1>
+                Commande confirmée
+            </h1>
+    
+            <p>
+                Merci pour votre confiance.
+            </p>
+    
+        </div>
+    
+    
+        <!-- ==========================
+             RÉCAPITULATIF
+        =========================== -->
+    
+        <section class="customer-section confirmation-card">
+    
+            <div id="confirmationContent">
+    
+            </div>
+    
+        </section>
+    
+    
+    </main>
+    
+    
+    <!-- ==========================
+         FOOTER
+    =========================== -->
+    
+    <footer>
+    
+        <p>
+            © 2026 Parfums Store — Tous droits réservés.
+        </p>
+    
+    </footer>
+    
+    
+    <script>
+    
+        // ==========================
+        // RÉCUPÉRER LA COMMANDE
+        // ==========================
+    
+        const order =
+            JSON.parse(
+                localStorage.getItem("lastOrder")
+            );
+    
+    
+        const content =
+            document.getElementById(
+                "confirmationContent"
+            );
+    
+    
+        // ==========================
+        // AUCUNE COMMANDE
+        // ==========================
+    
+        if (!order) {
+    
+            content.innerHTML = `
+    
+                <div class="confirmation-empty">
+    
+                    <h2>
+                        Aucune commande trouvée
+                    </h2>
+    
+                    <p>
+                        Nous n'avons trouvé aucune
+                        commande récente.
+                    </p>
+    
+                    <a
+                        href="index.html"
+                        class="confirmation-button"
+                    >
+                        Retour à la boutique
+                    </a>
+    
+                </div>
+    
+            `;
+    
+        }
+    
+    
+        // ==========================
+        // COMMANDE TROUVÉE
+        // ==========================
+    
+        else {
+    
+            // ==========================
+            // PRODUITS
+            // ==========================
+    
+            let productsHTML = "";
+    
+    
+            order.products.forEach(
+                function(product) {
+    
+                    const subtotal =
+                        product.price *
+                        product.quantity;
+    
+    
+                    productsHTML += `
+    
+                        <div class="confirmation-product">
+    
+                            <div>
+    
+                                <h3>
+                                    ${product.name}
+                                </h3>
+    
+                                <p>
+                                    Quantité :
+                                    ${product.quantity}
+                                </p>
+    
+                            </div>
+    
+    
+                            <strong>
+                                ${subtotal.toLocaleString("fr-FR")}
+                                FCFA
+                            </strong>
+    
+                        </div>
+    
+                    `;
+    
+                }
+            );
+    
+    
+            // ==========================
+            // LIVRAISON
+            // ==========================
+    
+            let deliveryName =
+                "Livraison standard";
+    
+    
+            if (
+                order.delivery.type ===
+                "express"
+            ) {
+    
+                deliveryName =
+                    "Livraison express";
+    
+            }
+    
+    
+            // ==========================
+            // AFFICHAGE
+            // ==========================
+    
+            content.innerHTML = `
+    
+                <div class="confirmation-success">
+    
+    
+                    <!-- MESSAGE -->
+    
+                    <div class="confirmation-icon">
+                        ✓
+                    </div>
+    
+    
+                    <h2>
+                        Merci
+                        ${order.customer.firstName} !
+                    </h2>
+    
+    
+                    <p class="confirmation-message">
+                        Votre commande a été enregistrée
+                        avec succès.
+                    </p>
+    
+    
+                    <!-- NUMÉRO -->
+    
+                    <div class="order-number">
+    
+                        <span>
+                            Numéro de commande
+                        </span>
+    
+                        <strong>
+                            ${order.number}
+                        </strong>
+    
+                    </div>
+    
+    
+                    <!-- INFORMATIONS CLIENT -->
+    
+                    <div class="confirmation-section">
+    
+                        <h2>
+                            Informations de livraison
+                        </h2>
+    
+    
+                        <div class="customer-info">
+    
+                            <p>
+                                <strong>
+                                    Nom :
+                                </strong>
+    
+                                ${order.customer.firstName}
+                                ${order.customer.lastName}
+                            </p>
+    
+    
+                            <p>
+                                <strong>
+                                    Téléphone :
+                                </strong>
+    
+                                ${order.customer.phone}
+                            </p>
+    
+    
+                            <p>
+                                <strong>
+                                    Ville :
+                                </strong>
+    
+                                ${order.customer.city}
+                            </p>
+    
+    
+                            <p>
+                                <strong>
+                                    Adresse :
+                                </strong>
+    
+                                ${order.customer.address}
+                            </p>
+    
+                        </div>
+    
+                    </div>
+    
+    
+                    <!-- PRODUITS -->
+    
+                    <div class="confirmation-section">
+    
+                        <h2>
+                            Produits commandés
+                        </h2>
+    
+    
+                        <div class="confirmation-products">
+    
+                            ${productsHTML}
+    
+                        </div>
+    
+                    </div>
+    
+    
+                    <!-- TOTAUX -->
+    
+                    <div class="confirmation-totals">
+    
+                        <div class="confirmation-total-line">
+    
+                            <span>
+                                Sous-total
+                            </span>
+    
+                            <strong>
+                                ${order.subtotal.toLocaleString("fr-FR")}
+                                FCFA
+                            </strong>
+    
+                        </div>
+    
+    
+                        <div class="confirmation-total-line">
+    
+                            <span>
+                                ${deliveryName}
+                            </span>
+    
+                            <strong>
+    
+                                ${
+                                    order.delivery.price === 0
+                                    ? "Gratuit"
+                                    : order.delivery.price.toLocaleString("fr-FR")
+                                      + " FCFA"
+                                }
+    
+                            </strong>
+    
+                        </div>
+    
+    
+                        <div class="confirmation-total-final">
+    
+                            <span>
+                                Total
+                            </span>
+    
+                            <strong>
+                                ${order.total.toLocaleString("fr-FR")}
+                                FCFA
+                            </strong>
+    
+                        </div>
+    
+                    </div>
+    
+    
+                    <!-- BOUTON -->
+    
+                    <a
+                        href="index.html"
+                        class="confirmation-button"
+                    >
+                        Retour à la boutique
+                    </a>
+    
+    
+                </div>
+    
+            `;
+    
+        }
+    
+    </script>
+    
+    </body> </html>

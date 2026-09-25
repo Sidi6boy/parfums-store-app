@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Parfums Store</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ==========================
+         HEADER
+    =========================== -->
+
+    <header class="header">
+
+        <div class="header-content">
+
+            <a href="#" class="logo-link">
+                <img
+                    src="logo.png"
+                    alt="Parfums Store"
+                    class="logo"
+                >
+            </a>
+
+
+            <nav class="navigation">
+
+                <a href="#">
+                    Accueil
+                </a>
+
+                <a href="#products">
+                    Produits
+                </a>
+
+                <button
+                    class="cart-button"
+                    id="openCart"
+                    type="button"
+                    aria-label="Ouvrir le panier"
+                >
+                    🛒
+                    <span>Panier</span>
+
+                    <span
+                        class="cart-badge"
+                        id="cartCount"
+                    >
+                        0
+                    </span>
+                </button>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- ==========================
+         HERO
+    =========================== -->
+
+    <section class="hero">
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <p class="hero-subtitle">
+                L'élégance en chaque fragrance
+            </p>
+
+            <h1>
+                Découvrez votre parfum
+            </h1>
+
+            <p class="hero-description">
+                Des fragrances sélectionnées pour révéler
+                votre personnalité et votre élégance.
+            </p>
+
+            <a
+                href="#products"
+                class="hero-button"
+            >
+                Découvrir nos parfums
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <main>
+
+        <!-- ==========================
+             FILTRES
+        =========================== -->
+
+        <section class="filters-section">
+
+            <div class="section-heading">
+
+                <p class="section-subtitle">
+                    Notre collection
+                </p>
+
+                <h2>
+                    Trouvez votre fragrance
+                </h2>
+
+            </div>
+
+
+            <div class="filters">
+
+                <div class="search-box">
+
+                    <span>⌕</span>
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Rechercher un parfum..."
+                    >
+
+                </div>
+
+
+                <select id="categoryFilter">
+
+                    <option value="all">
+                        Toutes les catégories
+                    </option>
+
+                    <option value="Homme">
+                        Homme
+                    </option>
+
+                    <option value="Femme">
+                        Femme
+                    </option>
+
+                </select>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================
+             PRODUITS
+        =========================== -->
+
+        <section
+            class="products"
+            id="products"
+        >
+        </section>
+
+    </main>
+
+
+    <!-- ==========================
+         PANNEAU PANIER
+    =========================== -->
+
+    <div
+        class="cart-overlay"
+        id="cartOverlay"
+    ></div>
+
+
+    <aside
+        class="cart-panel"
+        id="cartPanel"
+        aria-label="Panier"
+    >
+
+        <div class="cart-panel-header">
+
+            <div>
+                <p class="section-subtitle">
+                    Votre sélection
+                </p>
+
+                <h2>
+                    Mon panier
+                </h2>
+            </div>
+
+            <button
+                class="close-cart"
+                id="closeCart"
+                type="button"
+                aria-label="Fermer le panier"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            class="cart-items"
+            id="cartItems"
+        >
+        </div>
+
+
+        <div class="cart-panel-footer">
+
+            <div class="cart-total">
+
+                <span>
+                    Total
+                </span>
+
+                <strong id="cartTotal">
+                    0 FCFA
+                </strong>
+
+            </div>
+
+
+            <button
+                class="checkout-button"
+                id="checkoutButton"
+                type="button"
+            >
+                Passer la commande
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ==========================
+         FOOTER
+    =========================== -->
+
+    <footer>
+
+        <p>
+            © 2026 Parfums Store — Tous droits réservés.
+        </p>
+
+    </footer>
+
+
+    <script src="products.js"></script>
+    <script src="cart.js"></script>
+    <script src="script.js"></script>
+
+
+
+</body>
+
+</html>

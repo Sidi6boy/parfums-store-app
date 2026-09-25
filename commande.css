@@ -1,0 +1,1077 @@
+/* ==========================
+   VARIABLES
+========================== */
+
+:root {
+    --black: #111111;
+    --gold: #c5a46d;
+    --gold-light: #d8bd8a;
+    --cream: #f8f5f0;
+    --white: #ffffff;
+    --text: #333333;
+    --muted: #777777;
+    --border: #e2ddd5;
+    --error: #c0392b;
+    --success: #4a8f5c;
+}
+
+
+/* ==========================
+   RESET
+========================== */
+
+* {
+    box-sizing: border-box;
+
+    margin: 0;
+
+    padding: 0;
+}
+
+
+body {
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: var(--cream);
+
+    color: var(--text);
+}
+
+
+/* ==========================
+   HEADER
+========================== */
+
+.header {
+    background: var(--black);
+
+    border-bottom:
+        1px solid
+        rgba(197, 164, 109, 0.3);
+}
+
+
+.header-content {
+    max-width: 1200px;
+
+    min-height: 85px;
+
+    margin: auto;
+
+    padding: 10px 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+
+.logo {
+    width: 120px;
+
+    max-height: 65px;
+
+    object-fit: contain;
+}
+
+
+.back-link {
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    transition:
+        color 0.3s ease;
+}
+
+
+.back-link:hover {
+    color: var(--gold-light);
+}
+
+
+/* ==========================
+   CONTENEUR
+========================== */
+
+.checkout-container {
+    max-width: 1150px;
+
+    margin: auto;
+
+    padding: 70px 30px;
+}
+
+
+/* ==========================
+   TITRE
+========================== */
+
+.checkout-title {
+    text-align: center;
+
+    margin-bottom: 50px;
+}
+
+
+.subtitle {
+    color: var(--gold);
+
+    text-transform: uppercase;
+
+    letter-spacing: 3px;
+
+    font-size: 12px;
+
+    margin-bottom: 12px;
+}
+
+
+.checkout-title h1 {
+    font-family: Georgia, serif;
+
+    font-size: 42px;
+
+    font-weight: normal;
+
+    color: var(--black);
+
+    margin-bottom: 15px;
+}
+
+
+.checkout-title > p:last-child {
+    color: var(--muted);
+
+    line-height: 1.6;
+}
+
+
+/* ==========================
+   LAYOUT
+========================== */
+
+.checkout-layout {
+    display: grid;
+
+    grid-template-columns:
+        1.5fr 1fr;
+
+    gap: 30px;
+
+    align-items: start;
+}
+
+
+/* ==========================
+   SECTIONS
+========================== */
+
+.customer-section,
+.order-summary {
+    background: white;
+
+    border-radius: 8px;
+
+    padding: 35px;
+
+    box-shadow:
+        0 10px 35px
+        rgba(0, 0, 0, 0.06);
+}
+
+
+.customer-section h2,
+.order-summary h2 {
+    font-family: Georgia, serif;
+
+    font-size: 25px;
+
+    font-weight: normal;
+
+    color: var(--black);
+
+    margin-bottom: 30px;
+}
+
+
+/* ==========================
+   FORMULAIRE
+========================== */
+
+.form-row {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 20px;
+}
+
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+
+.form-group label {
+    display: block;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    margin-bottom: 8px;
+
+    color: var(--black);
+}
+
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+
+    padding: 14px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 4px;
+
+    background: #fff;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+.form-group textarea {
+    resize: vertical;
+}
+
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--gold);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(197, 164, 109, 0.12);
+}
+
+
+/* ==========================
+   ERREURS FORMULAIRE
+========================== */
+
+.form-error {
+    display: block;
+
+    min-height: 16px;
+
+    margin-top: 6px;
+
+    color: var(--error);
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+
+.form-group input.error,
+.form-group textarea.error {
+    border-color: var(--error);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(192, 57, 43, 0.08);
+}
+
+
+.form-group input.valid,
+.form-group textarea.valid {
+    border-color: var(--success);
+}
+
+
+/* ==========================
+   LIVRAISON
+========================== */
+
+.delivery-title {
+    margin-top: 35px;
+}
+
+
+.delivery-options {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    margin-bottom: 30px;
+}
+
+
+.delivery-option {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 18px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.3s ease,
+        background 0.3s ease;
+}
+
+
+.delivery-option:hover {
+    border-color: var(--gold);
+
+    background: #fcfaf7;
+}
+
+
+.delivery-option input {
+    accent-color: var(--gold);
+
+    width: 18px;
+
+    height: 18px;
+}
+
+
+.delivery-content {
+    flex: 1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.delivery-content strong {
+    font-size: 14px;
+}
+
+
+.delivery-content small {
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+
+.delivery-price {
+    color: var(--gold);
+
+    font-weight: bold;
+
+    font-size: 14px;
+}
+
+
+/* ==========================
+   BOUTON
+========================== */
+
+.submit-button {
+    width: 100%;
+
+    padding: 16px;
+
+    border: none;
+
+    border-radius: 4px;
+
+    background: var(--black);
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    letter-spacing: 1px;
+
+    transition:
+        background 0.3s ease,
+        transform 0.2s ease;
+}
+
+
+.submit-button:hover {
+    background: var(--gold);
+
+    transform: translateY(-2px);
+}
+
+
+/* ==========================
+   RÉCAPITULATIF
+========================== */
+
+.order-summary {
+    position: sticky;
+
+    top: 30px;
+}
+
+
+.order-summary h2 {
+    margin-bottom: 20px;
+}
+
+
+.order-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 15px 0;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+
+.order-item-image {
+    width: 65px;
+
+    height: 65px;
+
+    background: #f5f2ed;
+
+    border-radius: 5px;
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+}
+
+
+.order-item-image img {
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: contain;
+}
+
+
+.order-item-info {
+    flex: 1;
+}
+
+
+.order-item-info h3 {
+    font-family: Georgia, serif;
+
+    font-size: 16px;
+
+    font-weight: normal;
+
+    margin-bottom: 5px;
+}
+
+
+.order-item-info p {
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+
+.order-item-price {
+    font-size: 13px;
+
+    font-weight: bold;
+
+    color: var(--gold);
+}
+
+
+/* ==========================
+   TOTAUX
+========================== */
+
+.summary-line {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 15px 0;
+
+    border-bottom:
+        1px solid var(--border);
+
+    font-size: 14px;
+}
+
+
+.summary-line strong {
+    color: var(--text);
+}
+
+
+.summary-total {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding-top: 22px;
+
+    font-size: 18px;
+}
+
+
+.summary-total strong {
+    color: var(--gold);
+
+    font-size: 24px;
+}
+
+
+/* ==========================
+   PANIER VIDE
+========================== */
+
+.empty-order {
+    text-align: center;
+
+    padding: 30px 0;
+
+    color: var(--muted);
+
+    line-height: 1.7;
+}
+
+
+.empty-order a {
+    display: inline-block;
+
+    margin-top: 15px;
+
+    color: var(--gold);
+
+    text-decoration: none;
+}
+
+
+/* ==========================
+   FOOTER
+========================== */
+
+footer {
+    background: var(--black);
+
+    color: #aaa;
+
+    text-align: center;
+
+    padding: 30px;
+
+    margin-top: 50px;
+
+    font-size: 13px;
+}
+
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media (max-width: 850px) {
+
+    .checkout-layout {
+        grid-template-columns: 1fr;
+    }
+
+
+    .order-summary {
+        position: static;
+
+        order: -1;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .header-content {
+        min-height: 75px;
+
+        padding: 10px 20px;
+    }
+
+
+    .logo {
+        width: 95px;
+    }
+
+
+    .back-link {
+        font-size: 12px;
+    }
+
+
+    .checkout-container {
+        padding: 45px 15px;
+    }
+
+
+    .checkout-title h1 {
+        font-size: 34px;
+    }
+
+
+    .customer-section,
+    .order-summary {
+        padding: 25px;
+    }
+
+
+    .form-row {
+        grid-template-columns: 1fr;
+
+        gap: 0;
+    }
+
+}
+/* ==========================
+CONFIRMATION
+========================== */
+
+.confirmation-card {
+    max-width: 850px;
+    
+    margin: 0 auto;
+    
+    
+    }
+    
+    /* ==========================
+    SUCCÈS
+    ========================== */
+    
+    .confirmation-success {
+    text-align: center;
+    }
+    
+    .confirmation-icon {
+    width: 65px;
+    
+    height: 65px;
+    
+    margin: 0 auto 20px;
+    
+    display: flex;
+    
+    align-items: center;
+    
+    justify-content: center;
+    
+    background: var(--gold);
+    
+    color: white;
+    
+    border-radius: 50%;
+    
+    font-size: 30px;
+    
+    font-weight: bold;
+    
+    
+    }
+    
+    .confirmation-success > h2 {
+    font-family: Georgia, serif;
+    
+    font-size: 28px;
+    
+    font-weight: normal;
+    
+    color: var(--black);
+    
+    margin-bottom: 10px;
+    
+    
+    }
+    
+    .confirmation-message {
+    color: var(--muted);
+    
+    line-height: 1.6;
+    
+    margin-bottom: 30px;
+    
+    
+    }
+    
+    /* ==========================
+    NUMÉRO COMMANDE
+    ========================== */
+    
+    .order-number {
+    padding: 20px;
+    
+    background: #fcfaf7;
+    
+    border:
+        1px solid var(--border);
+    
+    border-radius: 6px;
+    
+    margin-bottom: 35px;
+    
+    
+    }
+    
+    .order-number span {
+    display: block;
+    
+    color: var(--muted);
+    
+    font-size: 12px;
+    
+    text-transform: uppercase;
+    
+    letter-spacing: 2px;
+    
+    margin-bottom: 8px;
+    
+    
+    }
+    
+    .order-number strong {
+    color: var(--gold);
+    
+    font-size: 20px;
+    
+    letter-spacing: 1px;
+    
+    
+    }
+    
+    /* ==========================
+    SECTIONS CONFIRMATION
+    ========================== */
+    
+    .confirmation-section {
+    text-align: left;
+    
+    padding-top: 30px;
+    
+    margin-top: 30px;
+    
+    border-top:
+        1px solid var(--border);
+    
+    
+    }
+    
+    .confirmation-section h2 {
+    font-family: Georgia, serif;
+    
+    font-size: 22px;
+    
+    font-weight: normal;
+    
+    color: var(--black);
+    
+    margin-bottom: 20px;
+    
+    
+    }
+    
+    /* ==========================
+    INFORMATIONS CLIENT
+    ========================== */
+    
+    .customer-info {
+    display: grid;
+    
+    grid-template-columns:
+        1fr 1fr;
+    
+    gap: 15px;
+    
+    background: #fcfaf7;
+    
+    padding: 20px;
+    
+    border-radius: 6px;
+    
+    
+    }
+    
+    .customer-info p {
+    color: var(--muted);
+    
+    font-size: 14px;
+    
+    line-height: 1.6;
+    
+    
+    }
+    
+    .customer-info strong {
+    color: var(--black);
+    }
+    
+    /* ==========================
+    PRODUITS
+    ========================== */
+    
+    .confirmation-products {
+    border:
+    1px solid var(--border);
+    
+    border-radius: 6px;
+    
+    overflow: hidden;
+    
+    
+    }
+    
+    .confirmation-product {
+    display: flex;
+    
+    justify-content: space-between;
+    
+    align-items: center;
+    
+    gap: 20px;
+    
+    padding: 18px 20px;
+    
+    border-bottom:
+        1px solid var(--border);
+    
+    
+    }
+    
+    .confirmation-product:last-child {
+    border-bottom: none;
+    }
+    
+    .confirmation-product h3 {
+    font-family: Georgia, serif;
+    
+    font-size: 16px;
+    
+    font-weight: normal;
+    
+    color: var(--black);
+    
+    margin-bottom: 5px;
+    
+    
+    }
+    
+    .confirmation-product p {
+    color: var(--muted);
+    
+    font-size: 12px;
+    
+    
+    }
+    
+    .confirmation-product strong {
+    color: var(--gold);
+    
+    font-size: 14px;
+    
+    white-space: nowrap;
+    
+    
+    }
+    
+    /* ==========================
+    TOTAUX
+    ========================== */
+    
+    .confirmation-totals {
+    margin-top: 30px;
+    
+    text-align: left;
+    
+    
+    }
+    
+    .confirmation-total-line {
+    display: flex;
+    
+    justify-content: space-between;
+    
+    align-items: center;
+    
+    padding: 14px 0;
+    
+    border-bottom:
+        1px solid var(--border);
+    
+    color: var(--muted);
+    
+    font-size: 14px;
+    
+    
+    }
+    
+    .confirmation-total-line strong {
+    color: var(--text);
+    }
+    
+    .confirmation-total-final {
+    display: flex;
+    
+    justify-content: space-between;
+    
+    align-items: center;
+    
+    padding-top: 22px;
+    
+    font-size: 18px;
+    
+    
+    }
+    
+    .confirmation-total-final strong {
+    color: var(--gold);
+    
+    font-size: 25px;
+    
+    
+    }
+    
+    /* ==========================
+    BOUTON
+    ========================== */
+    
+    .confirmation-button {
+    display: inline-block;
+    
+    margin-top: 35px;
+    
+    padding: 15px 30px;
+    
+    background: var(--black);
+    
+    color: white;
+    
+    text-decoration: none;
+    
+    border-radius: 4px;
+    
+    font-size: 14px;
+    
+    letter-spacing: 1px;
+    
+    transition:
+        background 0.3s ease,
+        transform 0.2s ease;
+    
+    
+    }
+    
+    .confirmation-button:hover {
+    background: var(--gold);
+    
+    transform: translateY(-2px);
+    
+    
+    }
+    
+    /* ==========================
+    AUCUNE COMMANDE
+    ========================== */
+    
+    .confirmation-empty {
+    text-align: center;
+    
+    padding: 40px 20px;
+    
+    
+    }
+    
+    .confirmation-empty h2 {
+    font-family: Georgia, serif;
+    
+    font-size: 25px;
+    
+    font-weight: normal;
+    
+    margin-bottom: 15px;
+    
+    
+    }
+    
+    .confirmation-empty p {
+    color: var(--muted);
+    
+    margin-bottom: 20px;
+    
+    
+    }
+    
+    /* ==========================
+    RESPONSIVE
+    ========================== */
+    
+    @media (max-width: 600px) {
+    
+    .customer-info {
+        grid-template-columns: 1fr;
+    }
+    
+    
+    .confirmation-product {
+        align-items: flex-start;
+    
+        flex-direction: column;
+    
+        gap: 8px;
+    }
+    
+    
+    .confirmation-total-final strong {
+        font-size: 21px;
+    }
+    
+    
+    }

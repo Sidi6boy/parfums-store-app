@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Passer la commande - Parfums Store</title>
+
+    <link
+        rel="stylesheet"
+        href="commande.css"
+    >
+</head>
+
+<body>
+
+    <!-- ==========================
+         HEADER
+    =========================== -->
+
+    <header class="header">
+
+        <div class="header-content">
+
+            <a href="index.html" class="logo-link">
+
+                <img
+                    src="logo.png"
+                    alt="Parfums Store"
+                    class="logo"
+                >
+
+            </a>
+
+            <a
+                href="index.html"
+                class="back-link"
+            >
+                ← Retour à la boutique
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- ==========================
+         CONTENU
+    =========================== -->
+
+    <main class="checkout-container">
+
+        <div class="checkout-title">
+
+            <p class="subtitle">
+                Parfums Store
+            </p>
+
+            <h1>
+                Finaliser votre commande
+            </h1>
+
+            <p>
+                Remplissez vos informations pour recevoir
+                votre commande.
+            </p>
+
+        </div>
+
+
+        <div class="checkout-layout">
+
+
+            <!-- ==========================
+                 FORMULAIRE
+            =========================== -->
+
+            <section class="customer-section">
+
+                <h2>
+                    Informations de livraison
+                </h2>
+
+
+                <form id="orderForm">
+
+                    <!-- PRÉNOM + NOM -->
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="firstName">
+                                Prénom *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="firstName"
+                                name="firstName"
+                                placeholder="Votre prénom"
+                                required
+                            >
+
+                            <small
+                                class="form-error"
+                                id="firstNameError"
+                            ></small>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="lastName">
+                                Nom *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="lastName"
+                                name="lastName"
+                                placeholder="Votre nom"
+                                required
+                            >
+
+                            <small
+                                class="form-error"
+                                id="lastNameError"
+                            ></small>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TÉLÉPHONE -->
+
+                    <div class="form-group">
+
+                        <label for="phone">
+                            Téléphone *
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            placeholder="Ex : 70 00 00 00"
+                            required
+                        >
+
+                        <small
+                            class="form-error"
+                            id="phoneError"
+                        ></small>
+
+                    </div>
+
+
+                    <!-- VILLE -->
+
+                    <div class="form-group">
+
+                        <label for="city">
+                            Ville *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="city"
+                            name="city"
+                            placeholder="Votre ville"
+                            required
+                        >
+
+                        <small
+                            class="form-error"
+                            id="cityError"
+                        ></small>
+
+                    </div>
+
+
+                    <!-- ADRESSE -->
+
+                    <div class="form-group">
+
+                        <label for="address">
+                            Adresse de livraison *
+                        </label>
+
+                        <textarea
+                            id="address"
+                            name="address"
+                            rows="4"
+                            placeholder="Indiquez votre adresse de livraison"
+                            required
+                        ></textarea>
+
+                        <small
+                            class="form-error"
+                            id="addressError"
+                        ></small>
+
+                    </div>
+
+
+                    <!-- ==========================
+                         LIVRAISON
+                    =========================== -->
+
+                    <h2 class="delivery-title">
+                        Mode de livraison
+                    </h2>
+
+
+                    <div class="delivery-options">
+
+                        <label class="delivery-option">
+
+                            <input
+                                type="radio"
+                                name="delivery"
+                                value="standard"
+                                data-price="0"
+                                checked
+                            >
+
+                            <span class="delivery-content">
+
+                                <strong>
+                                    Livraison standard
+                                </strong>
+
+                                <small>
+                                    Délai selon votre zone
+                                </small>
+
+                            </span>
+
+                            <span class="delivery-price">
+                                Gratuit
+                            </span>
+
+                        </label>
+
+
+                        <label class="delivery-option">
+
+                            <input
+                                type="radio"
+                                name="delivery"
+                                value="express"
+                                data-price="2000"
+                            >
+
+                            <span class="delivery-content">
+
+                                <strong>
+                                    Livraison express
+                                </strong>
+
+                                <small>
+                                    Livraison prioritaire
+                                </small>
+
+                            </span>
+
+                            <span class="delivery-price">
+                                2 000 FCFA
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="submit-button"
+                    >
+                        Confirmer la commande
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- ==========================
+                 RÉCAPITULATIF
+            =========================== -->
+
+            <aside class="order-summary">
+
+                <h2>
+                    Votre commande
+                </h2>
+
+
+                <div id="orderItems">
+                </div>
+
+
+                <div class="summary-line">
+
+                    <span>
+                        Sous-total
+                    </span>
+
+                    <strong id="subtotal">
+                        0 FCFA
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-line">
+
+                    <span>
+                        Livraison
+                    </span>
+
+                    <strong id="deliveryPrice">
+                        Gratuit
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="orderTotal">
+                        0 FCFA
+                    </strong>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+
+    <!-- ==========================
+         FOOTER
+    =========================== -->
+
+    <footer>
+
+        <p>
+            © 2026 Parfums Store — Tous droits réservés.
+        </p>
+
+    </footer>
+
+
+    <script src="commande.js"></script>
+
+</body>
+
+</html>
