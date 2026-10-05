@@ -1,4 +1,11 @@
 // ==========================
+// PRODUITS
+// ==========================
+
+let products = [];
+
+
+// ==========================
 // ÉLÉMENTS HTML
 // ==========================
 
@@ -42,7 +49,8 @@ const checkoutButton =
 
 function formatPrice(price) {
 
-    return price.toLocaleString("fr-FR") + " FCFA";
+    return Number(price).toLocaleString("fr-FR")
+        + " FCFA";
 
 }
 
@@ -228,7 +236,7 @@ function displayProducts(productsToDisplay) {
 
 // ==========================
 // AJOUTER UN PRODUIT
-// À L'INTERFACE DU PANIER
+// AU PANIER
 // ==========================
 
 function addProductToCart(product) {
@@ -349,7 +357,7 @@ function displayCart() {
 
 
         const subtotal =
-            product.price *
+            Number(product.price) *
             product.quantity;
 
 
@@ -494,6 +502,75 @@ function displayCart() {
 
 
 // ==========================
+// RÉCUPÉRER LES PRODUITS
+// DEPUIS L'API
+// ==========================
+
+async function loadProducts() {
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:3000/api/products"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Erreur HTTP : ${response.status}`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        // ==========================
+        // STOCKER LES PRODUITS
+        // ==========================
+
+        products = data;
+
+
+        // ==========================
+        // AFFICHER LES PRODUITS
+        // ==========================
+
+        displayProducts(products);
+
+
+    } catch (error) {
+
+        console.error(
+            "Erreur lors du chargement des produits :",
+            error
+        );
+
+
+        productsContainer.innerHTML = `
+
+            <p class="no-products">
+
+                Impossible de charger les produits.
+
+                <br>
+
+                Vérifiez que le serveur est démarré.
+
+            </p>
+
+        `;
+
+    }
+
+}
+
+
+// ==========================
 // ÉVÉNEMENTS DU PANIER
 // ==========================
 
@@ -580,74 +657,11 @@ checkoutButton.addEventListener(
 
 
 // ==========================
-// RÉCUPÉRER LES PRODUITS
-// DEPUIS L'API
-// ==========================
-
-async function loadProducts() {
-
-    try {
-
-        const response =
-            await fetch(
-                "http://localhost:3000/api/products"
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Erreur lors de la récupération des produits."
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        // Remplace le catalogue local
-        window.products = data;
-
-
-        displayProducts(products);
-
-
-    } catch (error) {
-
-        console.error(
-            "Erreur API :",
-            error
-        );
-
-
-        productsContainer.innerHTML = `
-
-            <p class="no-products">
-
-                Impossible de charger les produits.
-
-                <br>
-
-                Vérifiez que le serveur est démarré.
-
-            </p>
-
-        `;
-
-    }
-
-}
-
-
-// ==========================
 // LANCEMENT
 // ==========================
-
-loadProducts();
 
 displayCart();
 
 updateCartCount();
 
+loadProducts();

@@ -29,12 +29,20 @@ const orderForm =
 
 
 // ==========================
+// URL DU BACKEND
+// ==========================
+
+const API_URL =
+    "http://localhost:3000";
+
+
+// ==========================
 // FORMAT PRIX
 // ==========================
 
 function formatPrice(price) {
 
-    return price.toLocaleString("fr-FR")
+    return Number(price).toLocaleString("fr-FR")
         + " FCFA";
 
 }
@@ -51,8 +59,8 @@ function calculateSubtotal() {
 
             return total +
                 (
-                    product.price *
-                    product.quantity
+                    Number(product.price) *
+                    Number(product.quantity)
                 );
 
         },
@@ -89,7 +97,7 @@ function getDeliveryPrice() {
 
 
 // ==========================
-// VALIDATION DU PRÉNOM / NOM
+// VALIDATION DU NOM
 // ==========================
 
 function validateName(value) {
@@ -220,7 +228,6 @@ function displayOrder() {
         orderTotalElement.textContent =
             "0 FCFA";
 
-
         return;
 
     }
@@ -235,15 +242,14 @@ function displayOrder() {
         const item =
             document.createElement("div");
 
-
         item.classList.add(
             "order-item"
         );
 
 
         const subtotal =
-            product.price *
-            product.quantity;
+            Number(product.price) *
+            Number(product.quantity);
 
 
         item.innerHTML = `
@@ -300,10 +306,8 @@ function updateTotals() {
     const subtotal =
         calculateSubtotal();
 
-
     const delivery =
         getDeliveryPrice();
-
 
     const total =
         subtotal + delivery;
@@ -355,12 +359,54 @@ deliveryInputs.forEach(
 
 
 // ==========================
+// ENVOYER LA COMMANDE
+// ==========================
+
+async function sendOrder(orderData) {
+
+    const response =
+        await fetch(
+            `${API_URL}/api/orders`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(orderData)
+            }
+        );
+
+
+    const data =
+        await response.json();
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.message ||
+            "Impossible d'enregistrer la commande."
+        );
+
+    }
+
+
+    return data;
+
+}
+
+
+// ==========================
 // VALIDATION DE LA COMMANDE
 // ==========================
 
 orderForm.addEventListener(
     "submit",
-    function(event) {
+    async function(event) {
 
         event.preventDefault();
 
@@ -404,7 +450,7 @@ orderForm.addEventListener(
 
 
         // ==========================
-        // RÉCUPÉRER LES MESSAGES
+        // RÉCUPÉRER LES ERREURS
         // ==========================
 
         const firstNameError =
@@ -434,7 +480,7 @@ orderForm.addEventListener(
 
 
         // ==========================
-        // RÉCUPÉRER LES VALEURS
+        // VALEURS
         // ==========================
 
         const firstName =
@@ -603,12 +649,8 @@ orderForm.addEventListener(
 
 
         // ==========================
-        // CALCUL TOTAL
+        // PRIX LIVRAISON
         // ==========================
-
-        const subtotal =
-            calculateSubtotal();
-
 
         const deliveryPrice =
             Number(
@@ -616,84 +658,184 @@ orderForm.addEventListener(
             );
 
 
-        const total =
-            subtotal + deliveryPrice;
-
-
         // ==========================
-        // NUMÉRO DE COMMANDE
+        // DONNÉES DE COMMANDE
         // ==========================
 
-        const orderNumber =
-            "PS-" +
-            Date.now();
-
-
-        // ==========================
-        // CRÉER LA COMMANDE
-        // ==========================
-
-        const order = {
-
-            number: orderNumber,
+        const orderData = {
 
             customer: {
 
-                firstName: firstName,
+                firstName:
+                    firstName,
 
-                lastName: lastName,
+                lastName:
+                    lastName,
 
-                phone: phone,
+                phone:
+                    phone,
 
-                city: city,
+                city:
+                    city,
 
-                address: address
+                address:
+                    address
 
             },
 
             delivery: {
 
-                type: delivery.value,
+                type:
+                    delivery.value,
 
-                price: deliveryPrice
+                price:
+                    deliveryPrice
 
             },
 
-            products: cart,
+            products:
+                cart.map(
+                    function(product) {
 
-            subtotal: subtotal,
+                        return {
 
-            total: total,
+                            id:
+                                Number(product.id),
 
-            date:
-                new Date().toISOString()
+                            quantity:
+                                Number(product.quantity)
+
+                        };
+
+                    }
+                )
 
         };
 
 
         // ==========================
-        // SAUVEGARDER LA COMMANDE
+        // DÉSACTIVER LE BOUTON
         // ==========================
 
-        localStorage.setItem(
-            "lastOrder",
-            JSON.stringify(order)
-        );
+        const submitButton =
+            orderForm.querySelector(
+                'button[type="submit"]'
+            );
 
 
-        // ==========================
-        // VIDER LE PANIER
-        // ==========================
+        if (submitButton) {
 
-        localStorage.removeItem("cart");
+            submitButton.disabled = true;
+
+            submitButton.textContent =
+                "Enregistrement...";
+
+        }
 
 
-        // ==========================
-        // REDIRECTION
-        // ==========================
+        try {
 
-        window.location.href =
-            "confirmation.html";
+            // ==========================
+            // ENVOYER AU BACKEND
+            // ==========================
+
+            const result =
+                await sendOrder(orderData);
+
+
+            // ==========================
+            // CRÉER LA COMMANDE
+            // POUR LA PAGE CONFIRMATION
+            // ==========================
+
+            const order = {
+
+                number:
+                    result.order.number,
+
+                customer:
+                    orderData.customer,
+
+                delivery: {
+
+                    type:
+                        orderData.delivery.type,
+
+                    price:
+                        result.order.deliveryPrice
+
+                },
+
+                products:
+                    cart,
+
+                subtotal:
+                    result.order.subtotal,
+
+                total:
+                    result.order.total,
+
+                date:
+                    new Date().toISOString()
+
+            };
+
+
+            // ==========================
+            // SAUVEGARDER POUR
+            // confirmation.html
+            // ==========================
+
+            localStorage.setItem(
+                "lastOrder",
+                JSON.stringify(order)
+            );
+
+
+            // ==========================
+            // VIDER LE PANIER
+            // ==========================
+
+            localStorage.removeItem(
+                "cart"
+            );
+
+
+            // ==========================
+            // REDIRECTION
+            // ==========================
+
+            window.location.href =
+                "confirmation.html";
+
+
+        } catch (error) {
+
+            console.error(
+                "Erreur lors de l'envoi de la commande :",
+                error
+            );
+
+
+            alert(
+                "Impossible d'enregistrer la commande. Vérifiez que le serveur est démarré puis réessayez."
+            );
+
+
+            // ==========================
+            // RÉACTIVER LE BOUTON
+            // ==========================
+
+            if (submitButton) {
+
+                submitButton.disabled = false;
+
+                submitButton.textContent =
+                    "Confirmer la commande";
+
+            }
+
+        }
 
     }
 );

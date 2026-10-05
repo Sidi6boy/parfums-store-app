@@ -1,0 +1,633 @@
+<!DOCTYPE html> <html lang="fr"> <head>
+    <meta charset="UTF-8">
+    
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    
+    <title>Dashboard - Parfums Store</title>
+    
+    <link rel="stylesheet"
+          href="css/admin.css">
+    
+    </head> <body>
+    <div class="admin-layout">
+    
+        <aside class="sidebar">
+    
+            <div class="sidebar-logo">
+    
+                <div class="logo-small">
+                    PS
+                </div>
+    
+                <div>
+                    <strong>Parfums Store</strong>
+                    <span>Administration</span>
+                </div>
+    
+            </div>
+    
+    
+            <nav class="sidebar-nav">
+    
+                <button
+                    class="nav-button active"
+                    data-section="dashboard"
+                >
+                    📊
+                    <span>Tableau de bord</span>
+                </button>
+    
+                <button
+                    class="nav-button"
+                    data-section="products"
+                >
+                    📦
+                    <span>Produits</span>
+                </button>
+    
+                <button
+                    class="nav-button"
+                    data-section="orders"
+                >
+                    🛒
+                    <span>Commandes</span>
+                </button>
+    
+            </nav>
+    
+    
+            <button
+                id="logoutButton"
+                class="logout-button"
+            >
+                🚪
+                <span>Déconnexion</span>
+            </button>
+    
+        </aside>
+    
+    
+        <main class="main-content">
+    
+            <header class="topbar">
+    
+                <div>
+    
+                    <h1 id="pageTitle">
+                        Tableau de bord
+                    </h1>
+    
+                    <p>
+                        Gestion de votre boutique
+                    </p>
+    
+                </div>
+    
+    
+                <div class="admin-profile">
+    
+                    <div class="profile-avatar">
+                        A
+                    </div>
+    
+                    <div>
+    
+                        <strong id="adminUsername">
+                            Admin
+                        </strong>
+    
+                        <span>
+                            Administrateur
+                        </span>
+    
+                    </div>
+    
+                </div>
+    
+            </header>
+    
+    
+            <section
+                id="dashboardSection"
+                class="content-section"
+            >
+    
+                <div class="stats-grid">
+    
+                    <div class="stat-card">
+    
+                        <div class="stat-icon purple">
+                            📦
+                        </div>
+    
+                        <div>
+    
+                            <span>
+                                Produits
+                            </span>
+    
+                            <strong id="statProducts">
+                                0
+                            </strong>
+    
+                        </div>
+    
+                    </div>
+    
+    
+                    <div class="stat-card">
+    
+                        <div class="stat-icon blue">
+                            🛒
+                        </div>
+    
+                        <div>
+    
+                            <span>
+                                Commandes
+                            </span>
+    
+                            <strong id="statOrders">
+                                0
+                            </strong>
+    
+                        </div>
+    
+                    </div>
+    
+    
+                    <div class="stat-card">
+    
+                        <div class="stat-icon orange">
+                            ⏳
+                        </div>
+    
+                        <div>
+    
+                            <span>
+                                En attente
+                            </span>
+    
+                            <strong id="statPending">
+                                0
+                            </strong>
+    
+                        </div>
+    
+                    </div>
+    
+    
+                    <div class="stat-card">
+    
+                        <div class="stat-icon green">
+                            💰
+                        </div>
+    
+                        <div>
+    
+                            <span>
+                                Chiffre d'affaires
+                            </span>
+    
+                            <strong id="statRevenue">
+                                0 FCFA
+                            </strong>
+    
+                        </div>
+    
+                    </div>
+    
+                </div>
+    
+    
+                <div class="dashboard-grid">
+    
+                    <div class="panel">
+    
+                        <div class="panel-header">
+    
+                            <div>
+    
+                                <h2>
+                                    Dernières commandes
+                                </h2>
+    
+                                <p>
+                                    Les commandes les plus récentes
+                                </p>
+    
+                            </div>
+    
+                            <button
+                                class="btn btn-secondary"
+                                id="viewOrdersButton"
+                            >
+                                Voir toutes
+                            </button>
+    
+                        </div>
+    
+    
+                        <div class="table-wrapper">
+    
+                            <table>
+    
+                                <thead>
+    
+                                    <tr>
+    
+                                        <th>
+                                            Commande
+                                        </th>
+    
+                                        <th>
+                                            Client
+                                        </th>
+    
+                                        <th>
+                                            Total
+                                        </th>
+    
+                                        <th>
+                                            Statut
+                                        </th>
+    
+                                    </tr>
+    
+                                </thead>
+    
+                                <tbody
+                                    id="latestOrdersTable"
+                                ></tbody>
+    
+                            </table>
+    
+                        </div>
+    
+                    </div>
+    
+    
+                    <div class="panel">
+    
+                        <div class="panel-header">
+    
+                            <div>
+    
+                                <h2>
+                                    Produits
+                                </h2>
+    
+                                <p>
+                                    Produits disponibles
+                                </p>
+    
+                            </div>
+    
+                            <button
+                                class="btn btn-secondary"
+                                id="viewProductsButton"
+                            >
+                                Gérer
+                            </button>
+    
+                        </div>
+    
+    
+                        <div
+                            id="dashboardProducts"
+                            class="mini-products"
+                        ></div>
+    
+                    </div>
+    
+                </div>
+    
+            </section>
+    
+    
+            <section
+                id="productsSection"
+                class="content-section hidden"
+            >
+    
+                <div class="section-header">
+    
+                    <div>
+    
+                        <h2>
+                            Gestion des produits
+                        </h2>
+    
+                        <p>
+                            Ajouter, modifier ou supprimer vos produits.
+                        </p>
+    
+                    </div>
+    
+                    <button
+                        id="addProductButton"
+                        class="btn btn-primary"
+                    >
+                        + Ajouter un produit
+                    </button>
+    
+                </div>
+    
+    
+                <div
+                    id="productMessage"
+                    class="message"
+                ></div>
+    
+    
+                <div class="panel">
+    
+                    <div class="table-wrapper">
+    
+                        <table>
+    
+                            <thead>
+    
+                                <tr>
+    
+                                    <th>ID</th>
+                                    <th>Produit</th>
+                                    <th>Catégorie</th>
+                                    <th>Prix</th>
+                                    <th>Actions</th>
+    
+                                </tr>
+    
+                            </thead>
+    
+                            <tbody
+                                id="productsTable"
+                            ></tbody>
+    
+                        </table>
+    
+                    </div>
+    
+                </div>
+    
+            </section>
+    
+    
+            <section
+                id="ordersSection"
+                class="content-section hidden"
+            >
+    
+                <div class="section-header">
+    
+                    <div>
+    
+                        <h2>
+                            Gestion des commandes
+                        </h2>
+    
+                        <p>
+                            Consultez et gérez les commandes clients.
+                        </p>
+    
+                    </div>
+    
+                </div>
+    
+    
+                <div
+                    id="orderMessage"
+                    class="message"
+                ></div>
+    
+    
+                <div class="panel">
+    
+                    <div class="table-wrapper">
+    
+                        <table>
+    
+                            <thead>
+    
+                                <tr>
+    
+                                    <th>Commande</th>
+                                    <th>Client</th>
+                                    <th>Ville</th>
+                                    <th>Total</th>
+                                    <th>Statut</th>
+                                    <th>Action</th>
+    
+                                </tr>
+    
+                            </thead>
+    
+                            <tbody
+                                id="ordersTable"
+                            ></tbody>
+    
+                        </table>
+    
+                    </div>
+    
+                </div>
+    
+            </section>
+    
+        </main>
+    
+    </div>
+    
+    
+    <!-- MODALE PRODUIT -->
+    
+    <div
+        id="productModal"
+        class="modal hidden"
+    >
+    
+        <div class="modal-card">
+    
+            <div class="modal-header">
+    
+                <div>
+    
+                    <h2 id="productModalTitle">
+                        Ajouter un produit
+                    </h2>
+    
+                    <p>
+                        Informations du produit
+                    </p>
+    
+                </div>
+    
+                <button
+                    id="closeProductModal"
+                    class="modal-close"
+                >
+                    ×
+                </button>
+    
+            </div>
+    
+    
+            <form id="productForm">
+    
+                <input
+                    type="hidden"
+                    id="productId"
+                >
+    
+    
+                <div class="form-grid">
+    
+                    <div class="form-group">
+    
+                        <label>
+                            Nom
+                        </label>
+    
+                        <input
+                            type="text"
+                            id="productName"
+                            required
+                        >
+    
+                    </div>
+    
+    
+                    <div class="form-group">
+    
+                        <label>
+                            Prix
+                        </label>
+    
+                        <input
+                            type="number"
+                            id="productPrice"
+                            min="0"
+                            required
+                        >
+    
+                    </div>
+    
+    
+                    <div class="form-group">
+    
+                        <label>
+                            Catégorie
+                        </label>
+    
+                        <input
+                            type="text"
+                            id="productCategory"
+                            required
+                        >
+    
+                    </div>
+    
+    
+                    <div class="form-group">
+    
+                        <label>
+                            Image
+                        </label>
+    
+                        <input
+                            type="text"
+                            id="productImage"
+                            placeholder="images/parfum.jpg"
+                            required
+                        >
+    
+                    </div>
+    
+                </div>
+    
+    
+                <div class="form-group">
+    
+                    <label>
+                        Description
+                    </label>
+    
+                    <textarea
+                        id="productDescription"
+                        rows="5"
+                        required
+                    ></textarea>
+    
+                </div>
+    
+    
+                <div class="modal-actions">
+    
+                    <button
+                        type="button"
+                        id="cancelProductButton"
+                        class="btn btn-secondary"
+                    >
+                        Annuler
+                    </button>
+    
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Enregistrer
+                    </button>
+    
+                </div>
+    
+            </form>
+    
+        </div>
+    
+    </div>
+    
+    
+    <!-- MODALE COMMANDE -->
+    
+    <div
+        id="orderModal"
+        class="modal hidden"
+    >
+    
+        <div class="modal-card">
+    
+            <div class="modal-header">
+    
+                <div>
+    
+                    <h2>
+                        Détail de la commande
+                    </h2>
+    
+                    <p id="orderModalNumber"></p>
+    
+                </div>
+    
+                <button
+                    id="closeOrderModal"
+                    class="modal-close"
+                >
+                    ×
+                </button>
+    
+            </div>
+    
+    
+            <div id="orderDetails"></div>
+    
+        </div>
+    
+    </div>
+    
+    
+    <script src="js/dashboard.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/orders.js"></script>
+    
+    </body> </html>
