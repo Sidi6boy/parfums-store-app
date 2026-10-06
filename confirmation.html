@@ -1,403 +1,772 @@
-<!DOCTYPE html> <html lang="fr"> <head>
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
     <meta charset="UTF-8">
-    
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
-    
-    <title>Commande confirmée - Parfums Store</title>
-    
+
+    <title>
+        Commande confirmée - Parfums Store
+    </title>
+
     <link
         rel="stylesheet"
         href="commande.css"
     >
-    
-    </head> <body>
-    <!-- ==========================
+
+</head>
+
+
+<body>
+
+
+    <!-- ==================================================
          HEADER
-    =========================== -->
-    
+    =================================================== -->
+
     <header class="header">
-    
+
         <div class="header-content">
-    
+
             <a
                 href="index.html"
                 class="logo-link"
             >
-    
+
                 <img
                     src="logo.png"
                     alt="Parfums Store"
                     class="logo"
                 >
-    
+
             </a>
-    
+
         </div>
-    
+
     </header>
-    
-    
-    <!-- ==========================
+
+
+    <!-- ==================================================
          CONTENU
-    =========================== -->
-    
+    =================================================== -->
+
     <main class="checkout-container">
-    
-    
+
+
         <div class="checkout-title">
-    
+
             <p class="subtitle">
                 Parfums Store
             </p>
-    
+
             <h1>
                 Commande confirmée
             </h1>
-    
+
             <p>
                 Merci pour votre confiance.
             </p>
-    
+
         </div>
-    
-    
-        <!-- ==========================
-             RÉCAPITULATIF
-        =========================== -->
-    
-        <section class="customer-section confirmation-card">
-    
+
+
+        <!-- ==================================================
+             CARTE DE CONFIRMATION
+        =================================================== -->
+
+        <section
+            class="customer-section confirmation-card"
+        >
+
             <div id="confirmationContent">
-    
+
             </div>
-    
+
         </section>
-    
-    
+
+
     </main>
-    
-    
-    <!-- ==========================
+
+
+    <!-- ==================================================
          FOOTER
-    =========================== -->
-    
+    =================================================== -->
+
     <footer>
-    
+
         <p>
             © 2026 Parfums Store — Tous droits réservés.
         </p>
-    
+
     </footer>
-    
-    
+
+
+    <!-- ==================================================
+         JAVASCRIPT
+    =================================================== -->
+
     <script>
-    
-        // ==========================
+
+        // ==================================================
         // RÉCUPÉRER LA COMMANDE
-        // ==========================
-    
+        // ==================================================
+
         const order =
             JSON.parse(
                 localStorage.getItem("lastOrder")
             );
-    
-    
+
+
         const content =
             document.getElementById(
                 "confirmationContent"
             );
-    
-    
-        // ==========================
+
+
+        // ==================================================
         // AUCUNE COMMANDE
-        // ==========================
-    
+        // ==================================================
+
         if (!order) {
-    
+
             content.innerHTML = `
-    
+
                 <div class="confirmation-empty">
-    
+
                     <h2>
                         Aucune commande trouvée
                     </h2>
-    
+
                     <p>
                         Nous n'avons trouvé aucune
                         commande récente.
                     </p>
-    
+
                     <a
                         href="index.html"
                         class="confirmation-button"
                     >
                         Retour à la boutique
                     </a>
-    
+
                 </div>
-    
+
             `;
-    
+
         }
-    
-    
-        // ==========================
+
+
+        // ==================================================
         // COMMANDE TROUVÉE
-        // ==========================
-    
+        // ==================================================
+
         else {
-    
-            // ==========================
+
+            // ==================================================
             // PRODUITS
-            // ==========================
-    
+            // ==================================================
+
             let productsHTML = "";
-    
-    
-            order.products.forEach(
-                function(product) {
-    
-                    const subtotal =
-                        product.price *
-                        product.quantity;
-    
-    
-                    productsHTML += `
-    
-                        <div class="confirmation-product">
-    
-                            <div>
-    
-                                <h3>
-                                    ${product.name}
-                                </h3>
-    
-                                <p>
-                                    Quantité :
-                                    ${product.quantity}
-                                </p>
-    
+
+
+            if (
+                Array.isArray(order.products) &&
+                order.products.length > 0
+            ) {
+
+                order.products.forEach(
+                    function(product) {
+
+                        const subtotal =
+                            Number(product.price) *
+                            Number(product.quantity);
+
+
+                        productsHTML += `
+
+                            <div class="confirmation-product">
+
+                                <div>
+
+                                    <h3>
+                                        ${product.name}
+                                    </h3>
+
+                                    <p>
+                                        Quantité :
+                                        ${product.quantity}
+                                    </p>
+
+                                    <p>
+                                        Prix unitaire :
+                                        ${Number(product.price)
+                                            .toLocaleString("fr-FR")}
+                                        FCFA
+                                    </p>
+
+                                </div>
+
+
+                                <strong>
+
+                                    ${subtotal
+                                        .toLocaleString("fr-FR")}
+
+                                    FCFA
+
+                                </strong>
+
                             </div>
-    
-    
-                            <strong>
-                                ${subtotal.toLocaleString("fr-FR")}
-                                FCFA
-                            </strong>
-    
-                        </div>
-    
-                    `;
-    
-                }
-            );
-    
-    
-            // ==========================
-            // LIVRAISON
-            // ==========================
-    
+
+                        `;
+
+                    }
+                );
+
+            }
+
+
+            // ==================================================
+            // TYPE DE LIVRAISON
+            // ==================================================
+
             let deliveryName =
                 "Livraison standard";
-    
-    
+
+
             if (
-                order.delivery.type ===
-                "express"
+                order.delivery &&
+                order.delivery.type === "express"
             ) {
-    
+
                 deliveryName =
                     "Livraison express";
-    
+
             }
-    
-    
-            // ==========================
+
+
+            // ==================================================
+            // PRIX LIVRAISON
+            // ==================================================
+
+            const deliveryPrice =
+                Number(
+                    order.delivery?.price || 0
+                );
+
+
+            // ==================================================
+            // STATUT PAIEMENT
+            // ==================================================
+
+            const paymentStatus =
+                order.payment?.status ||
+                "pending";
+
+
+            let paymentStatusText =
+                "Paiement en attente";
+
+
+            let paymentStatusClass =
+                "payment-pending";
+
+
+            if (
+                paymentStatus === "paid"
+            ) {
+
+                paymentStatusText =
+                    "Paiement confirmé";
+
+                paymentStatusClass =
+                    "payment-success";
+
+            }
+
+
+            if (
+                paymentStatus === "failed"
+            ) {
+
+                paymentStatusText =
+                    "Paiement échoué";
+
+                paymentStatusClass =
+                    "payment-failed";
+
+            }
+
+
+            if (
+                paymentStatus === "cancelled"
+            ) {
+
+                paymentStatusText =
+                    "Paiement annulé";
+
+                paymentStatusClass =
+                    "payment-failed";
+
+            }
+
+
+            // ==================================================
+            // MODE DE PAIEMENT
+            // ==================================================
+
+            let paymentMethod =
+                order.payment?.method ||
+                "mobile_money";
+
+
+            if (
+                paymentMethod === "mobile_money"
+            ) {
+
+                paymentMethod =
+                    "Paiement mobile";
+
+            }
+
+
+            // ==================================================
+            // RÉFÉRENCE PAIEMENT
+            // ==================================================
+
+            const paymentReference =
+                order.payment?.reference;
+
+
+            // ==================================================
+            // DATE
+            // ==================================================
+
+            let orderDate = "";
+
+
+            if (order.date) {
+
+                const date =
+                    new Date(order.date);
+
+
+                if (!isNaN(date.getTime())) {
+
+                    orderDate =
+                        date.toLocaleString(
+                            "fr-FR",
+                            {
+                                dateStyle: "long",
+                                timeStyle: "short"
+                            }
+                        );
+
+                }
+
+            }
+
+
+            // ==================================================
             // AFFICHAGE
-            // ==========================
-    
+            // ==================================================
+
             content.innerHTML = `
-    
+
                 <div class="confirmation-success">
-    
-    
-                    <!-- MESSAGE -->
-    
+
+
+                    <!-- ======================================
+                         ICÔNE
+                    ======================================= -->
+
                     <div class="confirmation-icon">
+
                         ✓
+
                     </div>
-    
-    
+
+
+                    <!-- ======================================
+                         MESSAGE
+                    ======================================= -->
+
                     <h2>
+
                         Merci
-                        ${order.customer.firstName} !
+                        ${order.customer?.firstName || ""} !
+
                     </h2>
-    
-    
+
+
                     <p class="confirmation-message">
+
                         Votre commande a été enregistrée
                         avec succès.
+
                     </p>
-    
-    
-                    <!-- NUMÉRO -->
-    
+
+
+                    <!-- ======================================
+                         NUMÉRO COMMANDE
+                    ======================================= -->
+
                     <div class="order-number">
-    
+
                         <span>
                             Numéro de commande
                         </span>
-    
+
                         <strong>
-                            ${order.number}
+                            ${order.number || "N/A"}
                         </strong>
-    
+
                     </div>
-    
-    
-                    <!-- INFORMATIONS CLIENT -->
-    
+
+
+                    ${
+                        orderDate
+                        ? `
+                            <p class="confirmation-date">
+
+                                Commande passée le :
+                                <strong>
+                                    ${orderDate}
+                                </strong>
+
+                            </p>
+                        `
+                        : ""
+                    }
+
+
+                    <!-- ======================================
+                         PAIEMENT
+                    ======================================= -->
+
                     <div class="confirmation-section">
-    
+
+                        <h2>
+                            Paiement
+                        </h2>
+
+
+                        <div
+                            class="payment-status ${paymentStatusClass}"
+                        >
+
+                            <strong>
+                                ${paymentStatusText}
+                            </strong>
+
+                            <span>
+                                ${paymentMethod}
+                            </span>
+
+                        </div>
+
+
+                        ${
+                            paymentReference
+                            ? `
+                                <p class="payment-reference">
+
+                                    Référence :
+                                    <strong>
+                                        ${paymentReference}
+                                    </strong>
+
+                                </p>
+                            `
+                            : ""
+                        }
+
+
+                        ${
+                            paymentStatus === "pending"
+                            ? `
+                                <p class="payment-info">
+
+                                    Votre commande est enregistrée.
+                                    Le paiement mobile sera traité
+                                    à l'étape de paiement.
+
+                                </p>
+                            `
+                            : ""
+                        }
+
+                    </div>
+
+
+                    <!-- ======================================
+                         INFORMATIONS CLIENT
+                    ======================================= -->
+
+                    <div class="confirmation-section">
+
                         <h2>
                             Informations de livraison
                         </h2>
-    
-    
+
+
                         <div class="customer-info">
-    
+
                             <p>
+
                                 <strong>
                                     Nom :
                                 </strong>
-    
-                                ${order.customer.firstName}
-                                ${order.customer.lastName}
+
+                                ${order.customer?.firstName || ""}
+                                ${order.customer?.lastName || ""}
+
                             </p>
-    
-    
+
+
                             <p>
+
                                 <strong>
                                     Téléphone :
                                 </strong>
-    
-                                ${order.customer.phone}
+
+                                ${order.customer?.phone || ""}
+
                             </p>
-    
-    
+
+
                             <p>
+
                                 <strong>
                                     Ville :
                                 </strong>
-    
-                                ${order.customer.city}
+
+                                ${order.customer?.city || ""}
+
                             </p>
-    
-    
+
+
                             <p>
+
                                 <strong>
                                     Adresse :
                                 </strong>
-    
-                                ${order.customer.address}
+
+                                ${order.customer?.address || ""}
+
                             </p>
-    
+
                         </div>
-    
+
                     </div>
-    
-    
-                    <!-- PRODUITS -->
-    
+
+
+                    <!-- ======================================
+                         PRODUITS
+                    ======================================= -->
+
                     <div class="confirmation-section">
-    
+
                         <h2>
                             Produits commandés
                         </h2>
-    
-    
+
+
                         <div class="confirmation-products">
-    
+
                             ${productsHTML}
-    
+
                         </div>
-    
+
                     </div>
-    
-    
-                    <!-- TOTAUX -->
-    
+
+
+                    <!-- ======================================
+                         LIVRAISON
+                    ======================================= -->
+
+                    <div class="confirmation-section">
+
+                        <h2>
+                            Livraison
+                        </h2>
+
+
+                        <div class="customer-info">
+
+                            <p>
+
+                                <strong>
+                                    Mode :
+                                </strong>
+
+                                ${deliveryName}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>
+                                    Frais :
+                                </strong>
+
+                                ${
+                                    deliveryPrice === 0
+                                    ? "Gratuit"
+                                    : deliveryPrice
+                                        .toLocaleString("fr-FR")
+                                        + " FCFA"
+                                }
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ======================================
+                         TOTAUX
+                    ======================================= -->
+
                     <div class="confirmation-totals">
-    
-                        <div class="confirmation-total-line">
-    
+
+
+                        <div
+                            class="confirmation-total-line"
+                        >
+
                             <span>
                                 Sous-total
                             </span>
-    
+
                             <strong>
-                                ${order.subtotal.toLocaleString("fr-FR")}
+
+                                ${
+                                    Number(order.subtotal || 0)
+                                        .toLocaleString("fr-FR")
+                                }
+
                                 FCFA
+
                             </strong>
-    
+
                         </div>
-    
-    
-                        <div class="confirmation-total-line">
-    
+
+
+                        <div
+                            class="confirmation-total-line"
+                        >
+
                             <span>
                                 ${deliveryName}
                             </span>
-    
+
                             <strong>
-    
+
                                 ${
-                                    order.delivery.price === 0
+                                    deliveryPrice === 0
                                     ? "Gratuit"
-                                    : order.delivery.price.toLocaleString("fr-FR")
-                                      + " FCFA"
+                                    : deliveryPrice
+                                        .toLocaleString("fr-FR")
+                                        + " FCFA"
                                 }
-    
+
                             </strong>
-    
+
                         </div>
-    
-    
-                        <div class="confirmation-total-final">
-    
+
+
+                        <div
+                            class="confirmation-total-final"
+                        >
+
                             <span>
                                 Total
                             </span>
-    
+
                             <strong>
-                                ${order.total.toLocaleString("fr-FR")}
+
+                                ${
+                                    Number(order.total || 0)
+                                        .toLocaleString("fr-FR")
+                                }
+
                                 FCFA
+
                             </strong>
-    
+
                         </div>
-    
+
+
                     </div>
-    
-    
-                    <!-- BOUTON -->
-    
+
+
+                    <!-- ======================================
+                         MESSAGE PAIEMENT
+                    ======================================= -->
+
+                    ${
+                        paymentStatus === "pending"
+                        ? `
+
+                            <div class="payment-pending-box">
+
+                                <h3>
+                                    Paiement mobile
+                                </h3>
+
+                                <p>
+
+                                    Votre commande est bien
+                                    enregistrée.
+
+                                </p>
+
+                                <p>
+
+                                    Le paiement mobile sera
+                                    disponible dans la prochaine
+                                    étape.
+
+                                </p>
+
+                            </div>
+
+                        `
+                        : ""
+                    }
+
+
+                    <!-- ======================================
+                         BOUTON
+                    ======================================= -->
+
                     <a
                         href="index.html"
                         class="confirmation-button"
                     >
+
                         Retour à la boutique
+
                     </a>
-    
-    
+
+
                 </div>
-    
+
             `;
-    
+
         }
-    
+
     </script>
-    
-    </body> </html>
+
+
+</body>
+
+</html>

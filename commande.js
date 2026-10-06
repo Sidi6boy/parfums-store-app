@@ -1,16 +1,14 @@
-// ==========================
+// ==================================================
 // RÉCUPÉRER LE PANIER
-// ==========================
+// ==================================================
 
 let cart =
-    JSON.parse(
-        localStorage.getItem("cart")
-    ) || [];
+    JSON.parse(localStorage.getItem("cart")) || [];
 
 
-// ==========================
+// ==================================================
 // ÉLÉMENTS HTML
-// ==========================
+// ==================================================
 
 const orderItems =
     document.getElementById("orderItems");
@@ -28,17 +26,17 @@ const orderForm =
     document.getElementById("orderForm");
 
 
-// ==========================
+// ==================================================
 // URL DU BACKEND
-// ==========================
+// ==================================================
 
 const API_URL =
     "http://localhost:3000";
 
 
-// ==========================
-// FORMAT PRIX
-// ==========================
+// ==================================================
+// FORMATAGE DU PRIX
+// ==================================================
 
 function formatPrice(price) {
 
@@ -48,9 +46,9 @@ function formatPrice(price) {
 }
 
 
-// ==========================
-// CALCUL DU SOUS-TOTAL
-// ==========================
+// ==================================================
+// CALCULER LE SOUS-TOTAL
+// ==================================================
 
 function calculateSubtotal() {
 
@@ -70,9 +68,9 @@ function calculateSubtotal() {
 }
 
 
-// ==========================
-// CALCUL LIVRAISON
-// ==========================
+// ==================================================
+// RÉCUPÉRER LE PRIX DE LIVRAISON
+// ==================================================
 
 function getDeliveryPrice() {
 
@@ -96,9 +94,9 @@ function getDeliveryPrice() {
 }
 
 
-// ==========================
+// ==================================================
 // VALIDATION DU NOM
-// ==========================
+// ==================================================
 
 function validateName(value) {
 
@@ -110,9 +108,9 @@ function validateName(value) {
 }
 
 
-// ==========================
+// ==================================================
 // VALIDATION DU TÉLÉPHONE
-// ==========================
+// ==================================================
 
 function validatePhone(value) {
 
@@ -124,9 +122,9 @@ function validatePhone(value) {
 }
 
 
-// ==========================
+// ==================================================
 // VALIDATION DE LA VILLE
-// ==========================
+// ==================================================
 
 function validateCity(value) {
 
@@ -138,9 +136,9 @@ function validateCity(value) {
 }
 
 
-// ==========================
+// ==================================================
 // VALIDATION DE L'ADRESSE
-// ==========================
+// ==================================================
 
 function validateAddress(value) {
 
@@ -149,9 +147,9 @@ function validateAddress(value) {
 }
 
 
-// ==========================
+// ==================================================
 // AFFICHER UNE ERREUR
-// ==========================
+// ==================================================
 
 function showError(
     input,
@@ -169,9 +167,9 @@ function showError(
 }
 
 
-// ==========================
+// ==================================================
 // EFFACER UNE ERREUR
-// ==========================
+// ==================================================
 
 function clearError(
     input,
@@ -187,18 +185,57 @@ function clearError(
 }
 
 
-// ==========================
+// ==================================================
+// METTRE À JOUR LES TOTAUX
+// ==================================================
+
+function updateTotals() {
+
+    const subtotal =
+        calculateSubtotal();
+
+    const delivery =
+        getDeliveryPrice();
+
+    const total =
+        subtotal + delivery;
+
+
+    subtotalElement.textContent =
+        formatPrice(subtotal);
+
+
+    if (delivery === 0) {
+
+        deliveryPriceElement.textContent =
+            "Gratuit";
+
+    } else {
+
+        deliveryPriceElement.textContent =
+            formatPrice(delivery);
+
+    }
+
+
+    orderTotalElement.textContent =
+        formatPrice(total);
+
+}
+
+
+// ==================================================
 // AFFICHER LE RÉCAPITULATIF
-// ==========================
+// ==================================================
 
 function displayOrder() {
 
     orderItems.innerHTML = "";
 
 
-    // ==========================
+    // ------------------------------------------------
     // PANIER VIDE
-    // ==========================
+    // ------------------------------------------------
 
     if (cart.length === 0) {
 
@@ -233,14 +270,15 @@ function displayOrder() {
     }
 
 
-    // ==========================
-    // PRODUITS
-    // ==========================
+    // ------------------------------------------------
+    // AFFICHER LES PRODUITS
+    // ------------------------------------------------
 
     cart.forEach(function(product) {
 
         const item =
             document.createElement("div");
+
 
         item.classList.add(
             "order-item"
@@ -297,48 +335,9 @@ function displayOrder() {
 }
 
 
-// ==========================
-// METTRE À JOUR LES TOTAUX
-// ==========================
-
-function updateTotals() {
-
-    const subtotal =
-        calculateSubtotal();
-
-    const delivery =
-        getDeliveryPrice();
-
-    const total =
-        subtotal + delivery;
-
-
-    subtotalElement.textContent =
-        formatPrice(subtotal);
-
-
-    if (delivery === 0) {
-
-        deliveryPriceElement.textContent =
-            "Gratuit";
-
-    } else {
-
-        deliveryPriceElement.textContent =
-            formatPrice(delivery);
-
-    }
-
-
-    orderTotalElement.textContent =
-        formatPrice(total);
-
-}
-
-
-// ==========================
-// CHANGEMENT LIVRAISON
-// ==========================
+// ==================================================
+// CHANGEMENT DU MODE DE LIVRAISON
+// ==================================================
 
 const deliveryInputs =
     document.querySelectorAll(
@@ -358,9 +357,9 @@ deliveryInputs.forEach(
 );
 
 
-// ==========================
-// ENVOYER LA COMMANDE
-// ==========================
+// ==================================================
+// ENVOYER LA COMMANDE AU BACKEND
+// ==================================================
 
 async function sendOrder(orderData) {
 
@@ -381,8 +380,21 @@ async function sendOrder(orderData) {
         );
 
 
-    const data =
-        await response.json();
+    let data;
+
+
+    try {
+
+        data =
+            await response.json();
+
+    } catch (error) {
+
+        throw new Error(
+            "Le serveur a retourné une réponse invalide."
+        );
+
+    }
 
 
     if (!response.ok) {
@@ -400,9 +412,9 @@ async function sendOrder(orderData) {
 }
 
 
-// ==========================
-// VALIDATION DE LA COMMANDE
-// ==========================
+// ==================================================
+// SOUMISSION DU FORMULAIRE
+// ==================================================
 
 orderForm.addEventListener(
     "submit",
@@ -411,9 +423,9 @@ orderForm.addEventListener(
         event.preventDefault();
 
 
-        // ==========================
+        // ------------------------------------------------
         // VÉRIFIER LE PANIER
-        // ==========================
+        // ------------------------------------------------
 
         if (cart.length === 0) {
 
@@ -429,9 +441,9 @@ orderForm.addEventListener(
         }
 
 
-        // ==========================
+        // ------------------------------------------------
         // RÉCUPÉRER LES INPUTS
-        // ==========================
+        // ------------------------------------------------
 
         const firstNameInput =
             document.getElementById("firstName");
@@ -449,9 +461,9 @@ orderForm.addEventListener(
             document.getElementById("address");
 
 
-        // ==========================
+        // ------------------------------------------------
         // RÉCUPÉRER LES ERREURS
-        // ==========================
+        // ------------------------------------------------
 
         const firstNameError =
             document.getElementById(
@@ -479,9 +491,9 @@ orderForm.addEventListener(
             );
 
 
-        // ==========================
+        // ------------------------------------------------
         // VALEURS
-        // ==========================
+        // ------------------------------------------------
 
         const firstName =
             firstNameInput.value.trim();
@@ -499,9 +511,9 @@ orderForm.addEventListener(
             addressInput.value.trim();
 
 
-        // ==========================
+        // ------------------------------------------------
         // VALIDATION
-        // ==========================
+        // ------------------------------------------------
 
         let isValid = true;
 
@@ -616,9 +628,9 @@ orderForm.addEventListener(
         }
 
 
-        // ==========================
-        // ARRÊTER SI ERREUR
-        // ==========================
+        // ------------------------------------------------
+        // ARRÊTER S'IL Y A UNE ERREUR
+        // ------------------------------------------------
 
         if (!isValid) {
 
@@ -627,9 +639,9 @@ orderForm.addEventListener(
         }
 
 
-        // ==========================
+        // ------------------------------------------------
         // LIVRAISON
-        // ==========================
+        // ------------------------------------------------
 
         const delivery =
             document.querySelector(
@@ -648,9 +660,9 @@ orderForm.addEventListener(
         }
 
 
-        // ==========================
-        // PRIX LIVRAISON
-        // ==========================
+        // ------------------------------------------------
+        // PRIX DE LIVRAISON
+        // ------------------------------------------------
 
         const deliveryPrice =
             Number(
@@ -658,9 +670,79 @@ orderForm.addEventListener(
             );
 
 
-        // ==========================
-        // DONNÉES DE COMMANDE
-        // ==========================
+        if (
+            !Number.isFinite(deliveryPrice) ||
+            deliveryPrice < 0
+        ) {
+
+            alert(
+                "Le prix de livraison est invalide."
+            );
+
+            return;
+
+        }
+
+
+        // ------------------------------------------------
+        // PRODUITS
+        // ------------------------------------------------
+
+        const orderProducts =
+            cart.map(
+                function(product) {
+
+                    return {
+
+                        id:
+                            Number(product.id),
+
+                        quantity:
+                            Number(product.quantity)
+
+                    };
+
+                }
+            );
+
+
+        // ------------------------------------------------
+        // VÉRIFIER LES QUANTITÉS
+        // ------------------------------------------------
+
+        const invalidQuantity =
+            orderProducts.some(
+                function(product) {
+
+                    return (
+                        !Number.isInteger(
+                            product.id
+                        ) ||
+                        product.id <= 0 ||
+                        !Number.isInteger(
+                            product.quantity
+                        ) ||
+                        product.quantity <= 0
+                    );
+
+                }
+            );
+
+
+        if (invalidQuantity) {
+
+            alert(
+                "Une quantité de produit est invalide."
+            );
+
+            return;
+
+        }
+
+
+        // ------------------------------------------------
+        // DONNÉES DE LA COMMANDE
+        // ------------------------------------------------
 
         const orderData = {
 
@@ -694,28 +776,14 @@ orderForm.addEventListener(
             },
 
             products:
-                cart.map(
-                    function(product) {
-
-                        return {
-
-                            id:
-                                Number(product.id),
-
-                            quantity:
-                                Number(product.quantity)
-
-                        };
-
-                    }
-                )
+                orderProducts
 
         };
 
 
-        // ==========================
-        // DÉSACTIVER LE BOUTON
-        // ==========================
+        // ------------------------------------------------
+        // BOUTON
+        // ------------------------------------------------
 
         const submitButton =
             orderForm.querySelector(
@@ -733,22 +801,40 @@ orderForm.addEventListener(
         }
 
 
-        try {
+        // ------------------------------------------------
+        // ENVOYER LA COMMANDE
+        // ------------------------------------------------
 
-            // ==========================
-            // ENVOYER AU BACKEND
-            // ==========================
+        try {
 
             const result =
                 await sendOrder(orderData);
 
 
-            // ==========================
-            // CRÉER LA COMMANDE
-            // POUR LA PAGE CONFIRMATION
-            // ==========================
+            // ------------------------------------------------
+            // VÉRIFIER LA RÉPONSE
+            // ------------------------------------------------
+
+            if (
+                !result ||
+                !result.order
+            ) {
+
+                throw new Error(
+                    "Réponse du serveur invalide."
+                );
+
+            }
+
+
+            // ------------------------------------------------
+            // CRÉER LA COMMANDE LOCALE
+            // ------------------------------------------------
 
             const order = {
+
+                id:
+                    result.order.id,
 
                 number:
                     result.order.number,
@@ -775,16 +861,31 @@ orderForm.addEventListener(
                 total:
                     result.order.total,
 
+                payment: {
+
+                    method:
+                        result.order.paymentMethod ||
+                        "mobile_money",
+
+                    status:
+                        result.order.paymentStatus ||
+                        "pending",
+
+                    reference:
+                        result.order.paymentReference ||
+                        null
+
+                },
+
                 date:
                     new Date().toISOString()
 
             };
 
 
-            // ==========================
-            // SAUVEGARDER POUR
-            // confirmation.html
-            // ==========================
+            // ------------------------------------------------
+            // SAUVEGARDER LA COMMANDE
+            // ------------------------------------------------
 
             localStorage.setItem(
                 "lastOrder",
@@ -792,18 +893,23 @@ orderForm.addEventListener(
             );
 
 
-            // ==========================
+            // ------------------------------------------------
             // VIDER LE PANIER
-            // ==========================
+            // ------------------------------------------------
 
             localStorage.removeItem(
                 "cart"
             );
 
 
-            // ==========================
+            // Mettre à jour la variable locale
+
+            cart = [];
+
+
+            // ------------------------------------------------
             // REDIRECTION
-            // ==========================
+            // ------------------------------------------------
 
             window.location.href =
                 "confirmation.html";
@@ -818,13 +924,14 @@ orderForm.addEventListener(
 
 
             alert(
+                error.message ||
                 "Impossible d'enregistrer la commande. Vérifiez que le serveur est démarré puis réessayez."
             );
 
 
-            // ==========================
+            // ------------------------------------------------
             // RÉACTIVER LE BOUTON
-            // ==========================
+            // ------------------------------------------------
 
             if (submitButton) {
 
@@ -841,8 +948,8 @@ orderForm.addEventListener(
 );
 
 
-// ==========================
+// ==================================================
 // LANCEMENT
-// ==========================
+// ==================================================
 
 displayOrder();

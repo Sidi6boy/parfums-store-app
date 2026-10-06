@@ -4,17 +4,40 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+
 // ==================================================
-// TOUS LES STATUTS AUTORISÉS
+// STATUTS DE COMMANDE AUTORISÉS
 // ==================================================
 
 const allowedStatuses = [
-"pending",
-"confirmed",
-"shipped",
-"delivered",
-"cancelled"
+    "pending",
+    "confirmed",
+    "shipped",
+    "delivered",
+    "cancelled"
 ];
+
+
+// ==================================================
+// STATUTS DE PAIEMENT AUTORISÉS
+// ==================================================
+
+const allowedPaymentStatuses = [
+    "pending",
+    "paid",
+    "failed",
+    "cancelled"
+];
+
+
+// ==================================================
+// MOYENS DE PAIEMENT AUTORISÉS
+// ==================================================
+
+const allowedPaymentMethods = [
+    "mobile_money"
+];
+
 
 // ==================================================
 // TOUTES LES COMMANDES
@@ -23,91 +46,9 @@ const allowedStatuses = [
 
 router.get("/", authMiddleware, async function (req, res) {
 
-try {
+    try {
 
-    const [orders] = await db.query(
-
-        `SELECT
-            id,
-            order_number,
-            first_name,
-            last_name,
-            phone,
-            city,
-            address,
-            delivery_type,
-            delivery_price,
-            subtotal,
-            total,
-            status,
-            created_at
-         FROM orders
-         ORDER BY id DESC`
-
-    );
-
-
-    res.status(200).json({
-
-        count: orders.length,
-
-        orders: orders
-
-    });
-
-} catch (error) {
-
-    console.error(
-        "Erreur lors de la récupération des commandes :",
-        error
-    );
-
-    res.status(500).json({
-
-        message:
-            "Erreur serveur lors de la récupération des commandes."
-
-    });
-
-}
-
-
-});
-
-// ==================================================
-// DÉTAIL D'UNE COMMANDE
-// GET /api/admin/orders/:id
-// ==================================================
-
-router.get("/:id", authMiddleware, async function (req, res) {
-
-try {
-
-    const orderId =
-        Number(req.params.id);
-
-
-    if (
-        !Number.isInteger(orderId) ||
-        orderId <= 0
-    ) {
-
-        return res.status(400).json({
-
-            message:
-                "Identifiant de commande invalide."
-
-        });
-
-    }
-
-
-    // ------------------------------------------
-    // RÉCUPÉRER LA COMMANDE
-    // ------------------------------------------
-
-    const [orders] =
-        await db.query(
+        const [orders] = await db.query(
 
             `SELECT
                 id,
@@ -122,136 +63,250 @@ try {
                 subtotal,
                 total,
                 status,
+                payment_method,
+                payment_status,
+                payment_reference,
+                paid_at,
                 created_at
              FROM orders
-             WHERE id = ?
-             LIMIT 1`,
-
-            [orderId]
+             ORDER BY id DESC`
 
         );
 
 
-    if (orders.length === 0) {
+        res.status(200).json({
 
-        return res.status(404).json({
+            count: orders.length,
+
+            orders: orders
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Erreur lors de la récupération des commandes admin :",
+            error
+        );
+
+        res.status(500).json({
 
             message:
-                "Commande introuvable."
+                "Erreur serveur lors de la récupération des commandes."
 
         });
 
     }
 
-
-    const order =
-        orders[0];
+});
 
 
-    // ------------------------------------------
-    // RÉCUPÉRER LES PRODUITS
-    // ------------------------------------------
+// ==================================================
+// DÉTAIL D'UNE COMMANDE
+// GET /api/admin/orders/:id
+// ==================================================
 
-    const [items] =
-        await db.query(
+router.get("/:id", authMiddleware, async function (req, res) {
 
-            `SELECT
-                id,
-                product_id,
-                product_name,
-                price,
-                quantity,
-                subtotal,
-                created_at
-             FROM order_items
-             WHERE order_id = ?
-             ORDER BY id ASC`,
+    try {
 
-            [orderId]
-
-        );
+        const orderId =
+            Number(req.params.id);
 
 
-    // ------------------------------------------
-    // RÉPONSE
-    // ------------------------------------------
+        // ------------------------------------------
+        // VÉRIFIER ID
+        // ------------------------------------------
 
-    res.status(200).json({
+        if (
+            !Number.isInteger(orderId) ||
+            orderId <= 0
+        ) {
 
-        order: {
+            return res.status(400).json({
 
-            id:
-                order.id,
+                message:
+                    "Identifiant de commande invalide."
 
-            orderNumber:
-                order.order_number,
-
-            customer: {
-
-                firstName:
-                    order.first_name,
-
-                lastName:
-                    order.last_name,
-
-                phone:
-                    order.phone,
-
-                city:
-                    order.city,
-
-                address:
-                    order.address
-
-            },
-
-            delivery: {
-
-                type:
-                    order.delivery_type,
-
-                price:
-                    order.delivery_price
-
-            },
-
-            subtotal:
-                order.subtotal,
-
-            total:
-                order.total,
-
-            status:
-                order.status,
-
-            createdAt:
-                order.created_at,
-
-            items:
-                items
+            });
 
         }
 
-    });
 
-} catch (error) {
+        // ------------------------------------------
+        // RÉCUPÉRER LA COMMANDE
+        // ------------------------------------------
 
-    console.error(
-        "Erreur lors de la récupération de la commande :",
-        error
-    );
+        const [orders] =
+            await db.query(
 
-    res.status(500).json({
+                `SELECT
+                    id,
+                    order_number,
+                    first_name,
+                    last_name,
+                    phone,
+                    city,
+                    address,
+                    delivery_type,
+                    delivery_price,
+                    subtotal,
+                    total,
+                    status,
+                    payment_method,
+                    payment_status,
+                    payment_reference,
+                    paid_at,
+                    created_at
+                 FROM orders
+                 WHERE id = ?
+                 LIMIT 1`,
 
-        message:
-            "Erreur serveur lors de la récupération de la commande."
+                [orderId]
 
-    });
+            );
 
-}
 
+        if (orders.length === 0) {
+
+            return res.status(404).json({
+
+                message:
+                    "Commande introuvable."
+
+            });
+
+        }
+
+
+        const order =
+            orders[0];
+
+
+        // ------------------------------------------
+        // RÉCUPÉRER LES PRODUITS
+        // ------------------------------------------
+
+        const [items] =
+            await db.query(
+
+                `SELECT
+                    id,
+                    product_id,
+                    product_name,
+                    price,
+                    quantity,
+                    subtotal,
+                    created_at
+                 FROM order_items
+                 WHERE order_id = ?
+                 ORDER BY id ASC`,
+
+                [orderId]
+
+            );
+
+
+        // ------------------------------------------
+        // RÉPONSE
+        // ------------------------------------------
+
+        res.status(200).json({
+
+            order: {
+
+                id:
+                    order.id,
+
+                orderNumber:
+                    order.order_number,
+
+
+                customer: {
+
+                    firstName:
+                        order.first_name,
+
+                    lastName:
+                        order.last_name,
+
+                    phone:
+                        order.phone,
+
+                    city:
+                        order.city,
+
+                    address:
+                        order.address
+
+                },
+
+
+                delivery: {
+
+                    type:
+                        order.delivery_type,
+
+                    price:
+                        order.delivery_price
+
+                },
+
+
+                payment: {
+
+                    method:
+                        order.payment_method,
+
+                    status:
+                        order.payment_status,
+
+                    reference:
+                        order.payment_reference,
+
+                    paidAt:
+                        order.paid_at
+
+                },
+
+
+                subtotal:
+                    order.subtotal,
+
+                total:
+                    order.total,
+
+                status:
+                    order.status,
+
+                createdAt:
+                    order.created_at,
+
+                items:
+                    items
+
+            }
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Erreur lors de la récupération de la commande :",
+            error
+        );
+
+        res.status(500).json({
+
+            message:
+                "Erreur serveur lors de la récupération de la commande."
+
+        });
+
+    }
 
 });
+
 
 // ==================================================
 // MODIFIER LE STATUT D'UNE COMMANDE
@@ -260,153 +315,337 @@ try {
 
 router.patch("/:id/status", authMiddleware, async function (req, res) {
 
-try {
+    try {
 
-    const orderId =
-        Number(req.params.id);
+        const orderId =
+            Number(req.params.id);
 
-    const status =
-        req.body.status;
-
-
-    // ------------------------------------------
-    // VÉRIFIER ID
-    // ------------------------------------------
-
-    if (
-        !Number.isInteger(orderId) ||
-        orderId <= 0
-    ) {
-
-        return res.status(400).json({
-
-            message:
-                "Identifiant de commande invalide."
-
-        });
-
-    }
+        const status =
+            req.body.status;
 
 
-    // ------------------------------------------
-    // VÉRIFIER STATUT
-    // ------------------------------------------
+        // ------------------------------------------
+        // VÉRIFIER ID
+        // ------------------------------------------
 
-    if (
-        typeof status !== "string" ||
-        !allowedStatuses.includes(status)
-    ) {
+        if (
+            !Number.isInteger(orderId) ||
+            orderId <= 0
+        ) {
 
-        return res.status(400).json({
+            return res.status(400).json({
 
-            message:
-                "Statut de commande invalide.",
+                message:
+                    "Identifiant de commande invalide."
 
-            allowedStatuses:
-                allowedStatuses
+            });
 
-        });
-
-    }
+        }
 
 
-    // ------------------------------------------
-    // VÉRIFIER QUE LA COMMANDE EXISTE
-    // ------------------------------------------
+        // ------------------------------------------
+        // VÉRIFIER STATUT
+        // ------------------------------------------
 
-    const [orders] =
-        await db.query(
+        if (
+            typeof status !== "string" ||
+            !allowedStatuses.includes(status)
+        ) {
 
-            `SELECT
-                id,
-                order_number,
-                status
-             FROM orders
-             WHERE id = ?
-             LIMIT 1`,
+            return res.status(400).json({
 
-            [orderId]
+                message:
+                    "Statut de commande invalide.",
 
-        );
+                allowedStatuses:
+                    allowedStatuses
 
+            });
 
-    if (orders.length === 0) {
-
-        return res.status(404).json({
-
-            message:
-                "Commande introuvable."
-
-        });
-
-    }
+        }
 
 
-    // ------------------------------------------
-    // MODIFIER LE STATUT
-    // ------------------------------------------
+        // ------------------------------------------
+        // VÉRIFIER EXISTENCE
+        // ------------------------------------------
 
-    await db.execute(
+        const [orders] =
+            await db.query(
 
-        `UPDATE orders
-         SET status = ?
-         WHERE id = ?`,
+                `SELECT
+                    id,
+                    order_number,
+                    status
+                 FROM orders
+                 WHERE id = ?
+                 LIMIT 1`,
 
-        [
-            status,
-            orderId
-        ]
+                [orderId]
 
-    );
+            );
 
 
-    // ------------------------------------------
-    // RÉCUPÉRER LA COMMANDE MODIFIÉE
-    // ------------------------------------------
+        if (orders.length === 0) {
 
-    const [updatedOrders] =
-        await db.query(
+            return res.status(404).json({
 
-            `SELECT
-                id,
-                order_number,
-                status
-             FROM orders
-             WHERE id = ?
-             LIMIT 1`,
+                message:
+                    "Commande introuvable."
 
-            [orderId]
+            });
+
+        }
+
+
+        // ------------------------------------------
+        // MODIFIER
+        // ------------------------------------------
+
+        await db.execute(
+
+            `UPDATE orders
+             SET status = ?
+             WHERE id = ?`,
+
+            [
+                status,
+                orderId
+            ]
 
         );
 
 
-    res.status(200).json({
+        // ------------------------------------------
+        // RÉCUPÉRER
+        // ------------------------------------------
 
-        message:
-            "Statut de la commande modifié avec succès.",
+        const [updatedOrders] =
+            await db.query(
 
-        order:
-            updatedOrders[0]
+                `SELECT
+                    id,
+                    order_number,
+                    status,
+                    payment_status
+                 FROM orders
+                 WHERE id = ?
+                 LIMIT 1`,
 
-    });
+                [orderId]
 
-} catch (error) {
+            );
 
-    console.error(
-        "Erreur lors de la modification du statut :",
-        error
-    );
 
-    res.status(500).json({
+        res.status(200).json({
 
-        message:
-            "Erreur serveur lors de la modification du statut."
+            message:
+                "Statut de la commande modifié avec succès.",
 
-    });
+            order:
+                updatedOrders[0]
 
-}
+        });
 
+    } catch (error) {
+
+        console.error(
+            "Erreur lors de la modification du statut :",
+            error
+        );
+
+        res.status(500).json({
+
+            message:
+                "Erreur serveur lors de la modification du statut."
+
+        });
+
+    }
 
 });
+
+
+// ==================================================
+// MODIFIER LE STATUT DU PAIEMENT
+// PATCH /api/admin/orders/:id/payment-status
+// ==================================================
+
+router.patch(
+    "/:id/payment-status",
+    authMiddleware,
+    async function (req, res) {
+
+        try {
+
+            const orderId =
+                Number(req.params.id);
+
+            const paymentStatus =
+                req.body.paymentStatus;
+
+
+            // ------------------------------------------
+            // VÉRIFIER ID
+            // ------------------------------------------
+
+            if (
+                !Number.isInteger(orderId) ||
+                orderId <= 0
+            ) {
+
+                return res.status(400).json({
+
+                    message:
+                        "Identifiant de commande invalide."
+
+                });
+
+            }
+
+
+            // ------------------------------------------
+            // VÉRIFIER STATUT PAIEMENT
+            // ------------------------------------------
+
+            if (
+                typeof paymentStatus !== "string" ||
+                !allowedPaymentStatuses.includes(
+                    paymentStatus
+                )
+            ) {
+
+                return res.status(400).json({
+
+                    message:
+                        "Statut de paiement invalide.",
+
+                    allowedPaymentStatuses:
+                        allowedPaymentStatuses
+
+                });
+
+            }
+
+
+            // ------------------------------------------
+            // VÉRIFIER COMMANDE
+            // ------------------------------------------
+
+            const [orders] =
+                await db.query(
+
+                    `SELECT
+                        id,
+                        order_number,
+                        payment_status
+                     FROM orders
+                     WHERE id = ?
+                     LIMIT 1`,
+
+                    [orderId]
+
+                );
+
+
+            if (orders.length === 0) {
+
+                return res.status(404).json({
+
+                    message:
+                        "Commande introuvable."
+
+                });
+
+            }
+
+
+            // ------------------------------------------
+            // PRÉPARER paid_at
+            // ------------------------------------------
+
+            let paidAt = null;
+
+
+            if (paymentStatus === "paid") {
+
+                paidAt = new Date();
+
+            }
+
+
+            // ------------------------------------------
+            // MODIFIER LE PAIEMENT
+            // ------------------------------------------
+
+            await db.execute(
+
+                `UPDATE orders
+                 SET
+                    payment_status = ?,
+                    paid_at = ?
+                 WHERE id = ?`,
+
+                [
+                    paymentStatus,
+                    paidAt,
+                    orderId
+                ]
+
+            );
+
+
+            // ------------------------------------------
+            // RÉCUPÉRER
+            // ------------------------------------------
+
+            const [updatedOrders] =
+                await db.query(
+
+                    `SELECT
+                        id,
+                        order_number,
+                        status,
+                        payment_method,
+                        payment_status,
+                        payment_reference,
+                        paid_at
+                     FROM orders
+                     WHERE id = ?
+                     LIMIT 1`,
+
+                    [orderId]
+
+                );
+
+
+            res.status(200).json({
+
+                message:
+                    "Statut du paiement modifié avec succès.",
+
+                order:
+                    updatedOrders[0]
+
+            });
+
+        } catch (error) {
+
+            console.error(
+                "Erreur lors de la modification du paiement :",
+                error
+            );
+
+            res.status(500).json({
+
+                message:
+                    "Erreur serveur lors de la modification du paiement."
+
+            });
+
+        }
+
+    }
+);
+
 
 module.exports = router;
